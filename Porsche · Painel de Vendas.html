@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Porsche · Painel de Vendas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#fff;--surf:#f4f4f5;--tx:#010205;--mut:#6b6d70;--ln:#d8d8db;--red:#d5001c;--bar:#010205;--hdr:#010205;--hdt:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e12;--surf:#18181d;--tx:#f4f4f5;--mut:#a0a2a6;--ln:#2e2e34;--bar:#f4f4f5;--hdr:#18181d}}
+:root[data-theme="dark"]{--bg:#0e0e12;--surf:#18181d;--tx:#f4f4f5;--mut:#a0a2a6;--ln:#2e2e34;--bar:#f4f4f5;--hdr:#18181d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:300 15px/1.5 Inter,"Helvetica Neue",Arial,sans-serif}
+header{background:var(--hdr);color:var(--hdt);padding:28px 5vw 24px;border-bottom:3px solid var(--red)}
+header small{letter-spacing:.35em;text-transform:uppercase;font-size:11px;opacity:.7}
+header h1{margin:6px 0 0;font-weight:300;font-size:clamp(26px,4vw,40px);letter-spacing:.02em}
+main{padding:28px 5vw 60px;max-width:1280px;margin:auto}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:28px}
+label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+select,input{width:100%;padding:11px 10px;border:0;border-bottom:1px solid var(--tx);background:var(--surf);color:var(--tx);font:400 14px Inter,Arial,sans-serif;border-radius:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--ln);border:1px solid var(--ln);margin-bottom:36px}
+.kpi{background:var(--bg);padding:22px}
+.kpi b{display:block;font-weight:300;font-size:clamp(24px,3vw,34px);margin-top:4px}
+.kpi span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:32px}
+section{min-width:0}
+h2{font-weight:400;font-size:20px;margin:0 0 4px}
+h2::after{content:"";display:block;width:36px;height:2px;background:var(--red);margin-top:8px}
+p.q{color:var(--mut);font-size:13px;margin:10px 0 16px}
+.row{display:grid;grid-template-columns:minmax(90px,150px) 1fr 38px;gap:10px;align-items:center;font-size:13px;margin:7px 0}
+.row i{display:block;height:10px;background:var(--bar)}
+.row i.hot{background:var(--red)}
+.row em{font-style:normal;text-align:right;color:var(--mut)}
+.scroll{max-height:380px;overflow:auto;overflow-x:auto;border-top:1px solid var(--ln)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{position:sticky;top:0;background:var(--bg);text-align:left;font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding:10px 8px;border-bottom:1px solid var(--tx)}
+td{padding:9px 8px;border-bottom:1px solid var(--ln);vertical-align:top}
+.cols{display:flex;align-items:flex-end;gap:14px;height:200px;border-bottom:1px solid var(--tx);padding-top:20px}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:12px}
+.col i{display:block;width:100%;background:var(--bar);min-height:2px}
+.col.hot i{background:var(--red)}
+.xl{display:flex;gap:14px}.xl span{flex:1;text-align:center;font-size:12px;color:var(--mut);padding-top:6px}
+.ins{background:var(--surf);padding:18px 20px;border-left:3px solid var(--red);margin:0 0 16px;font-size:14px}
+.chip{display:inline-block;border:1px solid var(--ln);padding:1px 8px;margin:0 4px 4px 0;font-size:12px}
+.note{color:var(--mut);font-size:12px;margin-top:36px;border-top:1px solid var(--ln);padding-top:14px}
+.empty{color:var(--mut);padding:20px 0}
+</style></head><body>
+<header><small>Porsche · Brasil</small><h1>Painel de Vendas</h1></header>
+<main>
+<div class="filters">
+<div><label>Modelo</label><select id="fm"></select></div>
+<div><label>Model Year</label><select id="fy"></select></div>
+<div><label>City</label><select id="fc"></select></div>
+<div><label>Pay Method</label><select id="fp"></select></div>
+<div><label>Período · de</label><input type="date" id="d1"></div>
+<div><label>Período · até</label><input type="date" id="d2"></div>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<section><h2>Principais modelos vendidos</h2><p class="q">Ranking de modelos dentro dos filtros aplicados.</p><div id="models"></div></section>
+<section><h2>Ano-modelo mais vendido</h2><p class="q" id="yq"></p><div id="years"></div></section>
+<section><h2>Modelos por cidade</h2><p class="q">Quais modelos foram vendidos em cada cidade.</p><div class="scroll"><table id="ct"></table></div></section>
+<section><h2>Insight de popularidade</h2><p class="q">Famílias mais populares e o campeão de cada cidade.</p><div id="ins"></div></section>
+</div>
+<p class="note">Dados: 100 vendas da base “Sanitized”. 24 registros têm data inválida e só são excluídos quando um período é definido. “St, Louis” foi normalizada para “St. Louis”. Ao filtrar por período, vendas canceladas continuam contadas.</p>
+</main>
+<script>
+const D=[[6,"","718 Cayman",2022,79500.0,"Credit Card","Boston","Delivered"],[7,"2024-03-14","911 Turbo S",2024,235000.0,"Wire Transfer","Seattle","Delivered"],[8,"2024-04-18","Cayenne Coupe",2023,112750.0,"Financing","Austin","In Transit"],[9,"","Macan S",2021,68900.0,"Cash","Denver","Pending"],[10,"2024-05-22","Taycan 4S",2024,121000.0,"Bank Transfer","Los Angeles","Delivered"],[11,"2024-08-06","Panamera 4",2023,104500.0,"Credit Card","Miami","Cancelled"],[12,"2024-07-11","911 Carrera S",2020,96300.0,"Lease","New York","Delivered"],[13,"","Cayenne E-Hybrid",2022,89750.0,"Wire Transfer","San Diego","Pending Approval"],[14,"2024-08-19","718 Boxster",2021,73500.0,"Debit Card","Chicago","Shipped"],[15,"2024-09-02","Macan GTS",2024,95000.0,"Financing","Phoenix","In Transit"],[16,"2024-09-17","Taycan Turbo",2023,153200.5,"ACH Payment","Dallas","Delivered"],[17,"","911 GT3",2024,241000.0,"Wire Transfer","Las Vegas","Pending"],[18,"2024-05-11","Panamera Turbo S",2022,132000.0,"Cash","San Jose","Delivered"],[19,"2024-12-12","Cayenne Turbo GT",2024,188000.0,"Crypto Payment","Houston","Awaiting Delivery"],[20,"2024-12-25","911 Carrera Cabriolet",2023,127800.0,"Credit Card","Atlanta","Delivered"],[21,"2025-01-06","Macan",2021,58900.0,"Bank Transfer","Orlando","Pending"],[22,"","718 Spyder RS",2024,164000.0,"Financing","Portland","In Transit"],[23,"2025-02-14","Taycan Cross Turismo",2023,118500.0,"Wire Transfer","Charlotte","Delivered"],[24,"","Cayenne S",2022,91300.0,"Credit Card","Nashville","Pending"],[25,"2025-03-21","911 Targa 4S",2024,158750.0,"Lease","Minneapolis","Delivered"],[26,"2025-03-28","Panamera",2020,72000.0,"Bank Transfer","Philadelphia","Cancelled"],[27,"2025-04-09","Macan Electric",2025,86500.0,"Wire Transfer","San Antonio","Delivered"],[28,"","911 Dakar",2024,270000.0,"Cash","Salt Lake City","Awaiting Pickup"],[29,"2025-05-12","Taycan GTS",2023,139000.0,"Financing","Raleigh","In Transit"],[30,"2025-06-18","Cayenne",2021,76800.0,"Credit Card","Detroit","Delivered"],[31,"","718 Cayman GT4 RS",2024,173600.0,"Wire Transfer","Columbus","Pending"],[32,"2025-07-07","911 Carrera GTS",2022,119900.0,"Cash","Indianapolis","Delivered"],[33,"2025-07-22","Panamera 4 E-Hybrid",2023,109250.0,"Lease","Fort Worth","In Transit"],[34,"2025-08-14","Macan T",2022,82000.0,"Wire Transfer","Jacksonville","Delivered"],[35,"2025-09-01","Taycan Turbo S",2025,214000.0,"Crypto Payment","San Diego","Pending Review"],[36,"","911 Carrera",2024,124500.0,"Credit Card","Tampa","Delivered"],[37,"2025-09-18","Cayenne S",2023,98200.0,"Bank Transfer","Sacramento","Pending"],[38,"2025-10-04","Macan",2022,67500.0,"Financing","Cleveland","Delivered"],[39,"2025-10-12","Taycan",2025,116900.0,"Wire Transfer","Milwaukee","In Transit"],[40,"2025-10-29","Panamera 4S",2024,112000.0,"Cash","Kansas City","Delivered"],[41,"2025-02-11","718 Boxster",2021,74000.0,"Debit Card","Omaha","Cancelled"],[42,"2025-11-16","911 Turbo",2024,198300.0,"Wire Transfer","Albuquerque","Awaiting Delivery"],[43,"","Cayenne Coupe",2023,103750.0,"Wire Transfer","Tucson","Pending Approval"],[44,"","Macan GTS",2024,93600.0,"Financing","Fresno","Shipped"],[45,"2025-12-07","Taycan 4S",2025,129000.0,"ACH Payment","Virginia Beach","In Transit"],[46,"2025-12-22","Panamera Turbo",2022,136000.0,"Credit Card","Colorado Springs","Delivered"],[47,"","911 GT3 RS",2024,286500.0,"Wire Transfer","Arlington","Pending"],[48,"2026-01-08","Cayenne E-Hybrid",2023,92800.0,"Lease","Bakersfield","Delivered"],[49,"2026-01-15","Macan T",2022,72400.0,"Cash","Mesa","Awaiting Pickup"],[50,"2026-01-28","Taycan Turbo",2025,158500.0,"Crypto Payment","Atlanta","Delivered"],[51,"2026-02-03","718 Cayman",2021,69900.0,"Bank Transfer","Long Beach","Pending"],[52,"","911 Targa 4",2024,141250.0,"Financing","Oakland","In Transit"],[53,"2026-02-19","Panamera",2020,71500.0,"Wire Transfer","Tulsa","Delivered"],[54,"2026-02-25","Cayenne Turbo",2023,146800.0,"Credit Card","Wichita","Pending"],[55,"2026-03-01","Macan Electric",2025,89700.0,"Lease","New Orleans","Delivered"],[56,"2026-03-14","911 Carrera S",2022,104600.0,"Bank Transfer","Honolulu","Cancelled"],[57,"","Taycan GTS",2024,142000.0,"Wire Transfer","Anaheim","Delivered"],[58,"2026-04-08","Cayenne",2021,78400.0,"Cash","Henderson","Awaiting Review"],[59,"","718 Spyder RS",2025,169000.0,"Financing","Lexington","In Transit"],[60,"2026-04-21","911 Dakar",2024,268900.0,"Credit Card","Riverside","Delivered"],[61,"2026-04-29","Panamera 4",2023,101300.0,"Wire Transfer","Corpus Christi","Pending"],[62,"2026-05-05","Macan S",2021,66750.0,"Cash","St. Louis","Delivered"],[63,"2026-05-14","Taycan Cross Turismo",2024,127900.0,"Lease","Pittsburgh","In Transit"],[64,"2026-05-23","Cayenne Turbo GT",2025,200000.0,"Wire Transfer","Cincinnati","Delivered"],[65,"2026-06-02","911 Carrera Cabriolet",2023,132000.0,"Crypto Payment","Anchorage","Pending Review"],[66,"2026-06-15","718 Cayman GT4 RS",2024,176400.0,"Credit Card","Plano","Delivered"],[67,"","Panamera 4 E-Hybrid",2022,108500.0,"Bank Transfer","Newark","Cancelled"],[68,"2026-07-07","Macan",2021,59000.0,"Financing","Greensboro","Awaiting Delivery"],[69,"2026-07-20","Taycan Turbo S",2025,218000.0,"Wire Transfer","Lincoln","Pending"],[70,"","Cayenne S",2024,99950.0,"Debit Card","Jersey City","Delivered"],[71,"2026-04-08","911 Carrera GTS",2024,121750.0,"Credit Card","Chandler","Delivered"],[72,"2026-08-18","718 Boxster GTS",2023,91500.0,"Lease","Reno","Shipped"],[73,"2026-08-31","Panamera Turbo S",2022,134000.0,"Wire Transfer","Buffalo","In Transit"],[74,"2026-09-09","Macan GTS",2024,96800.0,"ACH Payment","Durham","Delivered"],[75,"2026-09-17","Taycan 4S",2025,131600.0,"Wire Transfer","Laredo","Pending Approval"],[76,"2026-09-28","Cayenne E-Hybrid",2023,94300.0,"Cash","Madison","Delivered"],[77,"2026-10-06","911 Turbo S",2025,242000.0,"Crypto Payment","Lubbock","Awaiting Pickup"],[78,"2026-10-16","718 Cayman S",2022,82750.0,"Credit Card","Toledo","Cancelled"],[79,"2026-10-29","Macan Electric",2026,91300.0,"Wire Transfer","Irvine","Delivered"],[80,"2026-11-03","Panamera",2021,79900.0,"Financing","Garland","Pending"],[81,"","Cayenne Coupe",2024,111000.0,"Bank Transfer","Irving","In Transit"],[82,"2026-12-11","911 Targa 4S",2023,156500.0,"Cash","Chesapeake","Delivered"],[83,"2026-12-24","Taycan",2025,119900.0,"Lease","Scottsdale","Pending"],[84,"","Macan T",2022,73200.0,"Wire Transfer","Norfolk","Delivered"],[85,"2026-12-28","911 GT3",2024,224000.0,"Wire Transfer","Boise","Awaiting Delivery"],[86,"2027-01-15","911 Carrera",2024,126900.0,"Credit Card","Orlando","Delivered"],[87,"2027-01-29","Cayenne",2023,84500.0,"Bank Transfer","San Jose","Pending"],[88,"2027-02-11","Macan S",2022,69800.0,"Financing","Tampa","Delivered"],[89,"","Taycan 4S",2025,132700.0,"Wire Transfer","Denver","In Transit"],[90,"2027-03-05","Panamera",2021,81000.0,"Cash","Austin","Delivered"],[91,"2027-03-18","718 Cayman",2023,78900.0,"Debit Card","Seattle","Cancelled"],[92,"2027-04-02","911 Turbo S",2026,249300.0,"Wire Transfer","Boston","Awaiting Delivery"],[93,"","Cayenne Coupe",2024,108750.0,"Wire Transfer","Phoenix","Pending Approval"],[94,"","Macan Electric",2026,92600.0,"Financing","Chicago","Shipped"],[95,"2027-05-12","Taycan Turbo",2025,164000.0,"ACH Payment","Dallas","In Transit"],[96,"2027-05-27","Panamera 4S",2024,119000.0,"Credit Card","San Francisco","Delivered"],[97,"","911 GT3",2026,232500.0,"Wire Transfer","Las Vegas","Pending"],[98,"2027-06-18","Cayenne E-Hybrid",2023,96800.0,"Lease","Charlotte","Delivered"],[99,"2027-07-03","Macan T",2022,74400.0,"Cash","Mesa","Awaiting Pickup"],[100,"2027-07-22","Taycan GTS",2025,148500.0,"Crypto Payment","Atlanta","Delivered"],[101,"2027-08-08","718 Boxster",2021,71900.0,"Bank Transfer","Long Beach","Pending"],[102,"","911 Targa 4",2024,143250.0,"Financing","Oakland","In Transit"],[103,"2027-09-19","Panamera Turbo",2020,137500.0,"Wire Transfer","Tulsa","Delivered"],[104,"2027-09-25","Cayenne Turbo GT",2025,204800.0,"Credit Card","Wichita","Pending"],[105,"2027-10-01","911 Dakar",2024,271700.0,"Lease","New Orleans","Delivered"]].map(r=>({id:r[0],dt:r[1],m:r[2],y:r[3],p:r[4],pay:r[5],c:r[6],st:r[7],f:r[2].split(" ")[0]}));
+const $=i=>document.getElementById(i);
+const fmt=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n);
+const cnt=(a,k)=>{const o={};a.forEach(r=>o[r[k]]=(o[r[k]]||0)+1);return Object.entries(o).sort((x,y)=>y[1]-x[1]||String(x[0]).localeCompare(String(y[0])))};
+function opts(id,k,label,num){const v=[...new Set(D.map(r=>r[k]))].sort(num?(a,b)=>b-a:undefined);$(id).innerHTML=`<option value="">${label}</option>`+v.map(x=>`<option>${x}</option>`).join("")}
+opts("fm","m","Todos os modelos");opts("fy","y","Todos os anos",1);opts("fc","c","Todas as cidades");opts("fp","pay","Todos os métodos");
+["fm","fy","fc","fp","d1","d2"].forEach(i=>$(i).addEventListener("change",render));
+function bars(list,max,hotFirst){return list.map(([n,v],i)=>`<div class="row"><span>${n}</span><i class="${hotFirst&&i==0?"hot":""}" style="width:${v/max*100}%"></i><em>${v}</em></div>`).join("")}
+function render(){
+const m=$("fm").value,y=$("fy").value,c=$("fc").value,p=$("fp").value,d1=$("d1").value,d2=$("d2").value;
+const a=D.filter(r=>(!m||r.m==m)&&(!y||r.y==y)&&(!c||r.c==c)&&(!p||r.pay==p)&&(!(d1||d2)||(r.dt&&(!d1||r.dt>=d1)&&(!d2||r.dt<=d2))));
+const rev=a.reduce((s,r)=>s+r.p,0),ym=cnt(a,"y"),mm=cnt(a,"m"),cc=cnt(a,"c");
+$("kpis").innerHTML=[["Vendas",a.length],["Receita",fmt(rev)],["Ticket médio",a.length?fmt(rev/a.length):"—"],["Ano-modelo líder",ym[0]?ym[0][0]:"—"]].map(k=>`<div class="kpi"><span>${k[0]}</span><b>${k[1]}</b></div>`).join("");
+if(!a.length){["models","years","ct","ins"].forEach(i=>$(i).innerHTML=`<div class="empty">Nenhum registro para os filtros selecionados.</div>`);$("yq").textContent="";return}
+$("models").innerHTML=bars(mm.slice(0,10),mm[0][1],1);
+const per=(d1||d2)?`entre ${d1||"início"} e ${d2||"hoje"}`:"em todo o período";
+$("yq").textContent=`Unidades por ano-modelo ${per}. Líder: ${ym[0][0]} (${ym[0][1]} un.).`;
+const ys=[...ym].sort((x,z)=>x[0]-z[0]);
+$("years").innerHTML=`<div class="cols">${ys.map(([k,v])=>`<div class="col ${v==ym[0][1]?"hot":""}">${v}<i style="height:${v/ym[0][1]*150}px"></i></div>`).join("")}</div><div class="xl">${ys.map(([k])=>`<span>${k}</span>`).join("")}</div>`;
+const byc={};a.forEach(r=>(byc[r.c]=byc[r.c]||[]).push(r));
+$("ct").innerHTML=`<tr><th>Cidade</th><th>Vendas</th><th>Modelos vendidos</th></tr>`+cc.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td><td>${cnt(byc[k],"m").map(([n,q])=>`<span class="chip">${n}${q>1?" ×"+q:""}</span>`).join("")}</td></tr>`).join("");
+const fam=cnt(a,"f"),top=fam[0];
+const lead=cc.filter(([k,v])=>v>1).length;
+const champ=cc.map(([k])=>{const f=cnt(byc[k],"f");return[k,f[0][0],f[0][1]]});
+const fc={};champ.forEach(x=>fc[x[1]]=(fc[x[1]]||0)+1);const fl=Object.entries(fc).sort((x,z)=>z[1]-x[1]);
+$("ins").innerHTML=`<div class="ins">A família <b>${top[0]}</b> lidera com <b>${top[1]}</b> vendas (${Math.round(top[1]/a.length*100)}%)${fam[1]?`, seguida por ${fam[1][0]} (${fam[1][1]})`:""}. Em ${fl[0][1]} de ${champ.length} cidades ela é a mais popular${fl[0][0]!=top[0]?" — na verdade, "+fl[0][0]+" lidera em mais cidades":""}.${lead<champ.length?` A maioria das cidades tem apenas 1 venda, então o “campeão” local indica presença, não tendência estatística.`:""}</div>`+bars(fam,top[1],1)+`<p class="q" style="margin-top:18px">Família mais popular por cidade</p><div>${champ.slice(0,24).map(x=>`<span class="chip">${x[0]}: <b>${x[1]}</b></span>`).join("")}${champ.length>24?`<span class="chip">+${champ.length-24} cidades</span>`:""}</div>`;
+}
+render();
+</script></body></html>
